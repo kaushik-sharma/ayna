@@ -19,4 +19,6 @@ class HomeState with _$HomeState {
 
   const factory HomeState.filteredByChannelId(List<MessageModel> messages,
       List<String> channelIds, String channelId) = _FilteredByChannelId;
+
+  const factory HomeState.chatSectionHidden() = _ChatSectionHidden;
 }

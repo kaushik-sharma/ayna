@@ -38,6 +38,8 @@ class _HomePageState extends State<HomePage>
   final _authBloc = sl<AuthBloc>();
   final _homeBloc = sl<HomeBloc>();
 
+  bool _showChatSection = true;
+
   @override
   void initState() {
     super.initState();
@@ -85,6 +87,10 @@ class _HomePageState extends State<HomePage>
             _channelIds.addAll(channelIds);
             _channelId = channelId;
             _messageController.clear();
+            _showChatSection = true;
+          },
+          chatSectionHidden: () {
+            _showChatSection = false;
           },
         );
       },
@@ -108,7 +114,7 @@ class _HomePageState extends State<HomePage>
               top: BorderSide(color: Colors.grey, width: 1.r),
             ),
           ),
-          child: _buildDesktopView(),
+          child: MediaQuery.sizeOf(context).width <= 500 ? _buildMobileView() : _buildDesktopView(),
         ),
       ),
     );
@@ -140,6 +146,11 @@ class _HomePageState extends State<HomePage>
 
     context.goNamed(Routes.auth.name);
   }
+
+  Widget _buildMobileView() => SizedBox(
+    width: MediaQuery.sizeOf(context).width,
+    child: _messages.isEmpty || !_showChatSection ? _buildSessionsList() : _buildChatSection(),
+  );
 
   Widget _buildDesktopView() => Row(
         children: [
@@ -237,11 +248,11 @@ class _HomePageState extends State<HomePage>
                 Card(
                   color: message.fromUser ? Colors.black : Colors.white,
                   child: Padding(
-                    padding: EdgeInsets.all(20.r),
+                    padding: EdgeInsets.all(20.h),
                     child: Text(
                       message.text,
                       style: TextStyle(
-                        fontSize: 20.sp,
+                        fontSize: 22.h,
                         color: message.fromUser ? Colors.white : Colors.black,
                       ),
                     ),
@@ -251,7 +262,7 @@ class _HomePageState extends State<HomePage>
                   timeago.format(
                       DateTime.fromMillisecondsSinceEpoch(message.createdAt)),
                   style: TextStyle(
-                    fontSize: 15.sp,
+                    fontSize: 15.h,
                     color: Colors.grey.shade900,
                   ),
                 ),
@@ -267,6 +278,15 @@ class _HomePageState extends State<HomePage>
       ),
       child: Column(
         children: [
+          if (MediaQuery.sizeOf(context).width <= 500) ...[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(onPressed: () {
+                _homeBloc.add(const HomeEvent.hideChatSection());
+              }, icon: const Icon(Icons.arrow_back_ios_new)),
+            ),
+            20.verticalSpace,
+          ],
           Expanded(
             child: ListView.separated(
               controller: _scrollController,

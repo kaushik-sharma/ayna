@@ -118,5 +118,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ),
       );
     });
+    on<_HideChatSection>((event, emit) {
+      emit(const _ChatSectionHidden());
+    });
   }
 }

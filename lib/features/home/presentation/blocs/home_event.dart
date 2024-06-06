@@ -13,4 +13,6 @@ class HomeEvent with _$HomeEvent {
 
   const factory HomeEvent.filterByChannelId(String channelId) =
       _FilterByChannelId;
+
+  const factory HomeEvent.hideChatSection() = _HideChatSection;
 }
